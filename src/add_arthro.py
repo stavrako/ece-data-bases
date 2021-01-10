@@ -143,7 +143,7 @@ def main_add_arthro():
         con.close()
         con = pymysql.connect(host = '150.140.186.221',port = 3306, user='db20_up1059338',passwd='up1059338', database='project_db20_up1059338')              
         cur = con.cursor()
-        shutil.copy(filedir, 'D:\\programming\\python\\baseis\\articles\\' + str(getid()) + '.pdf')
+        shutil.copy(filedir, 'C:\\articles\\' + str(getid()) + '.pdf')
         for index in range(len(sintaktis)):
             sql_command = "INSERT INTO Συντάσσει (Κωδικός_Συντάκτη, Κωδικός_Άρθρου,	Κωδικός_Ιδρύματος) VALUES (%s,%s,%s)"
             values = (id_sintakti[index], getid(), id_idrima[index])

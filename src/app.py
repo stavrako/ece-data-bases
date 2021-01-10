@@ -5,12 +5,11 @@ import webbrowser
 import pymysql
 import add_arthro
 import statistics
-#import update_arthro
+import update_arthro
 import update_teuxos
 import update_periodiko
 import update_idrima
 import update_sintakti
-
 
 class DB:                         #creating a class DB with functions to perform various operations on the database. 
     def __init__(self):           #constructor functor for class DB.
@@ -490,7 +489,7 @@ def treeview_sort_column(tv, col, reverse):
 
 def open_selected():
     if n==0:
-        webbrowser.open_new(r'D:\\programming\\python\\baseis\\articles\\%s.pdf' % s_values[0])
+        webbrowser.open_new(r'C:\\articles\\%s.pdf' % s_values[0])
 
 window = Tk() #using Tkinter module, create a GUI window
 window.title("App for Storing & Retrieving scientific journals and their articles using DB") #setting title of the window
@@ -933,8 +932,8 @@ b5.grid(row=12, column=9)
 b6 = Button(window, text="Add keyword", width=14, command=add_keyw_command)
 b6.grid(row=13, column=9)
 
-b7 = Button(window, text="Statistics", width=14, command=statistics.main_statistics)
-b7.grid(row=14, column=9)
+# b7 = Button(window, text="Statistics", width=14, command=statistics.main_statistics)
+# b7.grid(row=14, column=9)
 
 
 b9 = Button(window, text="Close", width=14, command=window.destroy)
