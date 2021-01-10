@@ -3,7 +3,7 @@ Project for course Data-Bases.
 
 ## Description
 
-This is the complete codebase of the App that manages storing and retrieving of scientific journals and their articles. 
+This is the complete codebase of the App that manages storing and retrieving of scientific journals and their articles. It can be used for personal purposes.
 
 ## Getting Started
 
