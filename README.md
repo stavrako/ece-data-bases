@@ -10,9 +10,9 @@ This is the complete codebase of the App that manages storing and retrieving of 
  
   From modules the one that needs installation is PyMySQL. You can follow instructions from here https://pypi.org/project/PyMySQL/#installation. 
 
-- App gives you the capability to open an article included in the database as a pdf. It presupposes to create a folder with name "articles" in your C directory **(C:\)**. Every time you add a new article, it will be saved there. Src folder, includes an **articles.zar** file that you can unzip it in C directory -instead of create a new one-. There are some articles saved that have beed downloaded from web and are passed also in Data Base. Otherwise, open selected άρθρο button doesn't work.
+- App gives you the capability to open an article included in the database as a pdf. It presupposes to create a folder with name **"articles"** in your C directory **(C:\)**. Every time you add a new article, it will be saved there.Now, src folder, includes an **articles.zar** file that you can unzip it in C directory -instead of create a new one-. There are some articles saved that have beed downloaded from web and are passed also in Data Base. Otherwise, open selected άρθρο button doesn't work.
 
-- In order to run the app, you have after unziping al the files, open the **app.exe** file. If something goes wrong, you have to run **app.py**.
+- In order to run the app unz the files. After that, open the **src/app.exe**. If something goes wrong, you have to run **src/app.py**.
 
 ## Authors
 
