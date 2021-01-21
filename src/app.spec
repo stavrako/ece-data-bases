@@ -3,8 +3,8 @@
 block_cipher = None
 
 
-a = Analysis(['Untitled-2.py'],
-             pathex=['C:\\Users\\sotir\\Documents\\ΗΜΤΥ\\4o Έτος\\7ο Εξάμηνο\\Βάσεις Δεδομένων\\Θεωρία\\Σημειώσεις\\Project'],
+a = Analysis(['app.py'],
+             pathex=['C:\\Users\\sotir\\Documents\\GitHub\\ece-data-bases\\src'],
              binaries=[],
              datas=[],
              hiddenimports=[],
@@ -23,7 +23,7 @@ exe = EXE(pyz,
           a.zipfiles,
           a.datas,
           [],
-          name='Untitled-2',
+          name='app',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,

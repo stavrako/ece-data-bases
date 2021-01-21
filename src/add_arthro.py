@@ -139,6 +139,8 @@ def main_add_arthro():
         con.commit()
         sql_command = "INSERT INTO ΑΡΘΡΟ (Τίτλος, Αρχική_Σελίδα, Τελική_Σελίδα, Κωδικός_Τεύχους) VALUES (%s,%s,%s,%s)"
         values = (title.get(),int(start_page.get()),int(end_page.get()), id_teuxos)
+        cur.execute(sql_command,values)
+        con.commit()
         cur.close()
         con.close()
         con = pymysql.connect(host = '150.140.186.221',port = 3306, user='db20_up1059338',passwd='up1059338', database='project_db20_up1059338')              
@@ -148,7 +150,7 @@ def main_add_arthro():
             sql_command = "INSERT INTO Συντάσσει (Κωδικός_Συντάκτη, Κωδικός_Άρθρου,	Κωδικός_Ιδρύματος) VALUES (%s,%s,%s)"
             values = (id_sintakti[index], getid(), id_idrima[index])
             cur.execute(sql_command,values)
-        con.commit()
+            con.commit()
         for id_a in id_anafora:
             sql_command = "INSERT INTO Αναφέρει (Κωδικός_Άρθρου, Κωδικός_Άρθρου_Αναφοράς) VALUES (%s,%s)"
             values = (getid(), id_a)

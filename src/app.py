@@ -4,111 +4,112 @@ from tkinter import messagebox
 import webbrowser
 import pymysql
 import add_arthro
-import statistics
 import update_arthro
 import update_teuxos
 import update_periodiko
 import update_idrima
 import update_sintakti
+import statistics
+import traceback
 
-class DB:                         #creating a class DB with functions to perform various operations on the database. 
-    def __init__(self):           #constructor functor for class DB.
+class DB:                         # Creating a class DB with functions to perform various operations on the database. 
+    def __init__(self):           # Constructor functor for class DB.
         self.con = pymysql.connect(host = '150.140.186.221',
                                     port = 3306, 
                                     user='db20_up1059338',
                                     passwd='up1059338', 
-                                    database='project_db20_up1059338')  #connects to a database called project_db20_up1059338
+                                    database='project_db20_up1059338')  # Connects to a database called project_db20_up1059338
         self.cur = self.con.cursor()
 
-    def __del__(self): #destructor created for the class DB
-        self.con.close() #closes the connection with the database
+    def __del__(self): # Destructor created for the class DB
+        self.con.close() # Closes the connection with the database
 
-    def update_arthro(self, id):    #to update the values of the selected row with the values passed by the user
+    def update_arthro(self, id):    # To update the values of the selected row with the values passed by the user
         update_arthro.main_update_arthro(id)
         self.con.commit()
         view_command()
     
-    def update_teuxos(self, id):    #to update the values of the selected row with the values passed by the user
+    def update_teuxos(self, id):    
         update_teuxos.main_update_teuxos(id)
         self.con.commit()
         view_command()
 
-    def update_periodiko(self, id):    #to update the values of the selected row with the values passed by the user
+    def update_periodiko(self, id):
         update_periodiko.main_update_periodiko(id)
         self.con.commit()
         view_command()
     
-    def update_sintakti(self, id):    #to update the values of the selected row with the values passed by the user
+    def update_sintakti(self, id):    
         update_sintakti.main_update_sintakti(id)
         self.con.commit()
         view_command()
     
-    def update_idrima(self, id):    #to update the values of the selected row with the values passed by the user
+    def update_idrima(self, id):    
         update_idrima.main_update_idrima(id)
         self.con.commit()
         view_command()
 
-    def delete_arthro(self, id): #to delete the row from the table given the value of the id of the selected row.
+    def delete_arthro(self, id): # To delete the row from the table given the value of the id of the selected row
         self.qr = "DELETE FROM ΑΡΘΡΟ WHERE Κωδικός_Άρθρου = %s"
         self.cur.execute(self.qr, (id,))
         self.con.commit()
         view_command()
 
-    def delete_teuxos(self, id): #to delete the row from the table given the value of the id of the selected row.
+    def delete_teuxos(self, id): 
         self.qr = "DELETE FROM ΤΕΥΧΟΣ_ΠΕΡΙΟΔΙΚΟΥ WHERE Κωδικός_Τεύχους = %s"
         self.cur.execute(self.qr, (id,))	
         self.con.commit()
         view_command()
     
-    def delete_periodiko(self, id): #to delete the row from the table given the value of the id of the selected row.
+    def delete_periodiko(self, id): 
         self.qr = "DELETE FROM ΠΕΡΙΟΔΙΚΟ WHERE Κωδικός_Περιοδικού = %s"
         self.cur.execute(self.qr, (id,))
         self.con.commit()
         view_command()
 
-    def delete_sintakti(self, id): #to delete the row from the table given the value of the id of the selected row.
+    def delete_sintakti(self, id): 
         self.qr = "DELETE FROM ΣΥΝΤΑΚΤΗ WHERE Κωδικός_Συντάκτη = %s"
         self.cur.execute(self.qr, (id,))
         self.con.commit()
         view_command()
 
-    def delete_idrima(self, id): #to delete the row from the table given the value of the id of the selected row.
+    def delete_idrima(self, id): 
         self.qr = "DELETE FROM ΙΔΡΥΜΑ WHERE Κωδικός_Ιδρύματος = %s"
         self.cur.execute(self.qr, (id,))
         self.con.commit()
         view_command()
 
-    def view_arthro(self): #To view all the rows present in the table
+    def view_arthro(self): # To view all the rows present in the table
         self.cur.execute("""SELECT a.Κωδικός_Άρθρου, a.Τίτλος, p.Κωδικός_Περιοδικού, p.Όνομα, t.Αριθμός_Τεύχους, p.Εκδότης, a.Αρχική_Σελίδα, a.Τελική_Σελίδα, 
                             GROUP_CONCAT(DISTINCT s2.Όνομα, " ", s2.Επώνυμο) AS "Συντάκτης", GROUP_CONCAT(DISTINCT i.Όνομα) AS "Ίδρυμα", GROUP_CONCAT(DISTINCT aa.Κωδικός_Άρθρου_Αναφοράς) AS "Κωδικός_Άρθρου_Αναφοράς", 
                             GROUP_CONCAT(DISTINCT l.Λέξη_κλειδί) AS "Λέξη_κλειδί" FROM ΑΡΘΡΟ a LEFT JOIN Συντάσσει s1 ON a.Κωδικός_Άρθρου = s1.Κωδικός_Άρθρου LEFT JOIN ΣΥΝΤΑΚΤΗΣ s2 ON s1.Κωδικός_Συντάκτη = s2.Κωδικός_Συντάκτη 
                             LEFT JOIN ΙΔΡΥΜΑ i ON s1.Κωδικός_Ιδρύματος = i.Κωδικός_Ιδρύματος LEFT JOIN ΤΕΥΧΟΣ_ΠΕΡΙΟΔΙΚΟΥ t ON a.Κωδικός_Τεύχους = t.Κωδικός_Τεύχους 
                             LEFT JOIN ΠΕΡΙΟΔΙΚΟ p ON t.Κωδικός_Περιοδικού = p.Κωδικός_Περιοδικού LEFT JOIN Αναφέρει aa ON a.Κωδικός_Άρθρου=aa.Κωδικός_Άρθρου LEFT JOIN Περιγράφεται l ON a.Κωδικός_Άρθρου = l.Κωδικός_Άρθρου
-                            GROUP BY a.Κωδικός_Άρθρου ORDER BY p.Όνομα, t.Αριθμός_Τεύχους, a.Τίτλος""") #execute function is to perform the SQL operations. Here, it produces all the rows from the table.
-        rows = self.cur.fetchall() #fetching all the rows one by one from the table and storing it in list rows
+                            GROUP BY a.Κωδικός_Άρθρου ORDER BY p.Όνομα, t.Αριθμός_Τεύχους, a.Τίτλος""") #It produces all the rows from the table.
+        rows = self.cur.fetchall() # Fetching all the rows one by one from the table and storing it in list rows
         return rows
 
-    def view_teuxos(self): #To view all the rows present in the table
+    def view_teuxos(self): 
         self.cur.execute("""SELECT t.Κωδικός_Τεύχους, p.Κωδικός_Περιοδικού, p.Όνομα, t.Αριθμός_Τεύχους, t.Θέμα, Ημερομηνία_Έκδοσης, GROUP_CONCAT(DISTINCT l.Λέξη_κλειδί) AS "Λέξη_κλειδί" FROM ΤΕΥΧΟΣ_ΠΕΡΙΟΔΙΚΟΥ t JOIN ΠΕΡΙΟΔΙΚΟ p ON t.Κωδικός_Περιοδικού = p.Κωδικός_Περιοδικού LEFT JOIN Περιγράφεται l ON t.Κωδικός_Τεύχους = l.Κωδικός_Τεύχους GROUP BY t.Κωδικός_Τεύχους ORDER BY p.Όνομα, t.Αριθμός_Τεύχους""") #execute function is to perform the SQL operations. Here, it produces all the rows from the table.
-        rows = self.cur.fetchall() #fetching all the rows one by one from the table and storing it in list rows
+        rows = self.cur.fetchall() 
         return rows
 
-    def view_periodiko(self): #To view all the rows present in the table
-        self.cur.execute("SELECT p.Κωδικός_Περιοδικού, p.Όνομα, p.Εκδότης, p.Impact_Factor, p.Γλώσσα, p.Συχνότητα_Έκδοσης FROM ΠΕΡΙΟΔΙΚΟ p ORDER BY p.Όνομα, p.Εκδότης") #execute function is to perform the SQL operations. Here, it produces all the rows from the table.
-        rows = self.cur.fetchall() #fetching all the rows one by one from the table and storing it in list rows
+    def view_periodiko(self): 
+        self.cur.execute("SELECT p.Κωδικός_Περιοδικού, p.Όνομα, p.Εκδότης, p.Impact_Factor, p.Γλώσσα, p.Συχνότητα_Έκδοσης FROM ΠΕΡΙΟΔΙΚΟ p ORDER BY p.Όνομα, p.Εκδότης") 
+        rows = self.cur.fetchall() 
         return rows
     
-    def view_sintakti(self): #To view all the rows present in the table
-        self.cur.execute("SELECT s.Κωδικός_Συντάκτη, s.Όνομα, s.Όνομα_Πατέρα, s.Επώνυμο, s.Ιδιότητα FROM ΣΥΝΤΑΚΤΗΣ s ORDER BY s.Επώνυμο, s.Όνομα, s.Όνομα_Πατέρα") #execute function is to perform the SQL operations. Here, it produces all the rows from the table.
-        rows = self.cur.fetchall() #fetching all the rows one by one from the table and storing it in list rows
+    def view_sintakti(self): 
+        self.cur.execute("SELECT s.Κωδικός_Συντάκτη, s.Όνομα, s.Όνομα_Πατέρα, s.Επώνυμο, s.Ιδιότητα FROM ΣΥΝΤΑΚΤΗΣ s ORDER BY s.Επώνυμο, s.Όνομα, s.Όνομα_Πατέρα") 
+        rows = self.cur.fetchall() 
         return rows
     
-    def view_idrima(self): #To view all the rows present in the table
-        self.cur.execute("SELECT i.Κωδικός_Ιδρύματος, i.Όνομα FROM ΙΔΡΥΜΑ i ORDER BY i.Όνομα") #execute function is to perform the SQL operations. Here, it produces all the rows from the table.
-        rows = self.cur.fetchall() #fetching all the rows one by one from the table and storing it in list rows
+    def view_idrima(self): 
+        self.cur.execute("SELECT i.Κωδικός_Ιδρύματος, i.Όνομα FROM ΙΔΡΥΜΑ i ORDER BY i.Όνομα") 
+        rows = self.cur.fetchall() 
         return rows
 
-    def search_arthro(self, title="", author="", idruma="", issn="", periodiko="", ar="", ekdotis="", keyw=""):  #to search for a given entry in the table given either the value of the title or author name
+    def search_arthro(self, title="", author="", idruma="", issn="", periodiko="", ar="", ekdotis="", keyw=""):  # To search for  given entries in the table given 
         title_qr = ""
         author_qr = ""
         idruma_qr = ""
@@ -156,7 +157,7 @@ class DB:                         #creating a class DB with functions to perform
             return rows
         return []
 
-    def search_teuxos(self, issn="", periodiko="", ar="", thema="", keyw=""):  #to search for a given entry in the table given either the value of the title or author name
+    def search_teuxos(self, issn="", periodiko="", ar="", thema="", keyw=""):  
         issn_qr = ""
         thema_qr = ""
         periodiko_qr = ""
@@ -186,7 +187,7 @@ class DB:                         #creating a class DB with functions to perform
             rows = self.cur.fetchall()
             return rows
 
-    def search_periodiko(self, issn="", periodiko="", ekdotis=""):  #to search for a given entry in the table given either the value of the title or author name
+    def search_periodiko(self, issn="", periodiko="", ekdotis=""):  
         issn_qr = ""
         periodiko_qr = ""
         ekdotis_qr = ""
@@ -208,7 +209,7 @@ class DB:                         #creating a class DB with functions to perform
             rows = self.cur.fetchall()
             return rows
 
-    def search_sintakti(self, onoma="", mesaio="", eponimo="", idiotita=""):  #to search for a given entry in the table given either the value of the title or author name
+    def search_sintakti(self, onoma="", mesaio="", eponimo="", idiotita=""):  
         onoma_qr = ""
         mesaio_qr = ""
         eponimo_qr = ""
@@ -234,7 +235,7 @@ class DB:                         #creating a class DB with functions to perform
             rows = self.cur.fetchall()
             return rows
 
-    def search_idrima(self, idrima=""):  #to search for a given entry in the table given either the value of the title or author name
+    def search_idrima(self, idrima=""):  
         idrima_qr = ""
         values = ()
         val = []
@@ -248,9 +249,13 @@ class DB:                         #creating a class DB with functions to perform
             rows = self.cur.fetchall()
             return rows
 
-    def add_keyw(self,id_arthrou):
+    def add_keyw(self,id_arthrou): # To add an existing (in table) or a new one keyword to selected article
         keyw = keyw_text.get()
-        if keyw != "":
+        self.qr = "SELECT Λέξη_κλειδί FROM ΛΕΞΗ_ΚΛΕΙΔΙ WHERE Λέξη_κλειδί = %s"
+        self.cur.execute(self.qr, keyw)
+        r = self.cur.fetchone()[0]
+        print(r)
+        if keyw != "" and r != keyw: # The keyword doesn't exist and being created before to add
             self.qr = "INSERT INTO ΛΕΞΗ_ΚΛΕΙΔΙ (Λέξη_κλειδί) VALUES (%s)"
             self.cur.execute(self.qr, keyw,)
             self.qr1 = "SELECT t.Κωδικός_Τεύχους FROM ΑΡΘΡΟ a LEFT JOIN ΤΕΥΧΟΣ_ΠΕΡΙΟΔΙΚΟΥ t ON a.Κωδικός_Τεύχους = t.Κωδικός_Τεύχους WHERE a.Κωδικός_Άρθρου = %s"
@@ -261,8 +266,17 @@ class DB:                         #creating a class DB with functions to perform
             self.cur.execute(self.qr2,values)
             self.con.commit()
             view_command()
-    
-    def get_ar(self,id,c):
+        elif r == keyw: # The keyword already exists in table
+            self.qr1 = "SELECT t.Κωδικός_Τεύχους FROM ΑΡΘΡΟ a LEFT JOIN ΤΕΥΧΟΣ_ΠΕΡΙΟΔΙΚΟΥ t ON a.Κωδικός_Τεύχους = t.Κωδικός_Τεύχους WHERE a.Κωδικός_Άρθρου = %s"
+            self.cur.execute(self.qr1, (id_arthrou,))
+            rows1 = self.cur.fetchall()
+            self.qr2 = "INSERT INTO Περιγράφεται (Κωδικός_Άρθρου, Κωδικός_Τεύχους, Λέξη_κλειδί) VALUES (%s,%s,%s)"
+            values = (id_arthrou, rows1[0][0], keyw)
+            self.cur.execute(self.qr2,values)
+            self.con.commit()
+            view_command()
+            
+    def get_ar(self,id,c): # To find number of articles by author, number of articles by affiliation, number of authors by affiliation and number of references by article
         if c==1:
             self.qr = "SELECT COUNT(DISTINCT a.Κωδικός_Άρθρου) AS Αριθμός_Άρθρων FROM ΑΡΘΡΟ a LEFT JOIN Συντάσσει s ON a.Κωδικός_Άρθρου = s.Κωδικός_Άρθρου WHERE s.Κωδικός_Συντάκτη = %s GROUP BY s.Κωδικός_Συντάκτη"
         elif c==2:
@@ -276,9 +290,12 @@ class DB:                         #creating a class DB with functions to perform
         self.con.commit()
         return ar
 
-db = DB()  #created an object of the class DB. Now database is connected and a new table book has been formed.
+    def statistics(self): # Call statistics window
+        statistics.main_statistics()
 
-# Remove all records
+db = DB()  # Created an object of the class DB, now database is connected
+
+# Clear all records from treeview
 def	remove_all():
     if n==0:
         for record in tree1.get_children():
@@ -296,7 +313,7 @@ def	remove_all():
         for record in tree5.get_children():
             tree5.delete(record)
 
-def view_command(): #to print all the rows of the table using view function of the class DB on to the screen
+def view_command(): # To print all the rows of the table of each tab using view function of the class DB on to the screen
     remove_all()
     if n==0:
         count = 0
@@ -339,7 +356,7 @@ def view_command(): #to print all the rows of the table using view function of t
                 tree5.insert(parent='', index='end', text='', values=(row[0], row[1], db.get_ar(row[0],2), db.get_ar(row[0],3)), tags=('oddrow'))
             count += 1
 					
-def search_command(): #to print the row we want based on title or author 
+def search_command(): # To print the row we want based on inputs of search ntries
     remove_all()
     if n==0:
         count = 0
@@ -382,7 +399,7 @@ def search_command(): #to print the row we want based on title or author
                 tree5.insert(parent='', index='end', text='', values=(row[0], row[1], db.get_ar(row[0],2), db.get_ar(row[0],3)), tags=('oddrow'))
         count += 1
         
-def clear_search_command():  
+def clear_search_command():  # To clear all search entries
     if n==0:
         e1.delete(0, END)
         e2.delete(0, END)
@@ -410,30 +427,29 @@ def clear_search_command():
     elif n==4:
         entry1.delete(0, END)
 
-def add_command():          #to add a new row into the table
+def add_command(): # To add record
 	add_arthro.main_add_arthro()
 	view_command()
 
-def delete_command(): #deleting a row 
+def delete_command(): # To delete record
     if n==0:
         db.delete_arthro(s_values[0]) #calls the delete function of the class DB and passes the id as the parameter and condition
         view_command()
     elif n==1:
-        db.delete_teuxos(s_values[0]) #calls the delete function of the class DB and passes the id as the parameter and condition
-        view_command()
+        db.delete_teuxos(s_values[0]) 
     elif n==2:
-        db.delete_periodiko(s_values[0]) #calls the delete function of the class DB and passes the id as the parameter and condition
+        db.delete_periodiko(s_values[0]) 
         view_command()
     elif n==3:
-        db.delete_sintakti(s_values[0]) #calls the delete function of the class DB and passes the id as the parameter and condition
+        db.delete_sintakti(s_values[0]) 
         view_command()
     elif n==4:
-        db.delete_idrima(s_values[0]) #calls the delete function of the class DB and passes the id as the parameter and condition
+        db.delete_idrima(s_values[0]) 
         view_command()
 
 def update_command():
     if n==0:
-        db.update_arthro(s_values[0]) #calls the update function of the class DB and passes the user input as parameters to update value of the row
+        db.update_arthro(s_values[0]) # Calls the update function of the class DB and passes the id as the parameter and condition
     elif n==1:
         db.update_teuxos(s_values[0])
     elif n==2:
@@ -443,30 +459,33 @@ def update_command():
     elif n==4:
         db.update_idrima(s_values[0])
 
-# Select Record
+def statistics_command(): # Calls the statistics function of the class DB
+    db.statistics()
+
+# Select record of treeview
 def select_record():
     global selected, s_values
     if n==0:
         selected = tree1.focus() # Grab record number
         s_values = tree1.item(selected, 'values') # Grab record values
     elif n==1:
-        selected = tree2.focus() # Grab record number
-        s_values = tree2.item(selected, 'values') # Grab record values
+        selected = tree2.focus() 
+        s_values = tree2.item(selected, 'values') 
     elif n==2:
-        selected = tree3.focus() # Grab record number
-        s_values = tree3.item(selected, 'values') # Grab record values
+        selected = tree3.focus() 
+        s_values = tree3.item(selected, 'values')
     elif n==3:
-        selected = tree4.focus() # Grab record number
-        s_values = tree4.item(selected, 'values') # Grab record values
+        selected = tree4.focus() 
+        s_values = tree4.item(selected, 'values') 
     elif n==4:
-        selected = tree5.focus() # Grab record number
-        s_values = tree5.item(selected, 'values') # Grab record values
+        selected = tree5.focus() 
+        s_values = tree5.item(selected, 'values') 
 
-def add_keyw_command():
+def add_keyw_command(): # Calls addkeyw function of the class DB and passes the id as the parameter and condition
     if n==0:
         db.add_keyw(s_values[0])
 
-def tab_change(event):
+def tab_change(event): # Called by tab changing and updates the value of current tab
 	global n
 	n = tabControl.index('current')
 	return n
@@ -475,7 +494,7 @@ def tab_change(event):
 def clicker(e):
 	select_record()
 
-def treeview_sort_column(tv, col, reverse):
+def treeview_sort_column(tv, col, reverse): # Sortos treevie records by clicked column either inc or desc
     l = [(tv.set(k, col), k) for k in tv.get_children('')]
     try:
         l.sort(key=lambda t: float(t[0]), reverse=reverse)
@@ -487,27 +506,28 @@ def treeview_sort_column(tv, col, reverse):
 
     tv.heading(col, command=lambda: treeview_sort_column(tv, col, not reverse))    
 
-def open_selected():
+def open_selected(): # To open selected article into a pdf viewer
     if n==0:
         webbrowser.open_new(r'C:\\articles\\%s.pdf' % s_values[0])
 
-window = Tk() #using Tkinter module, create a GUI window
-window.title("App for Storing & Retrieving scientific journals and their articles using DB") #setting title of the window
+window = Tk() # Using Tkinter module, create a GUI window
+window.title("App for Storing & Retrieving scientific journals and their articles using DB") # Setting title of the window
 
+# Adapt window geometry into full screen resolution
 window.fullScreenState = False
 window.attributes("-fullscreen", window.fullScreenState)
 w, h = window.winfo_screenwidth(), window.winfo_screenheight()
 window.geometry("%dx%d" % (w, h))
 
-def on_closing(): #destructor for the window
+def on_closing(): # Destructor for the window
 	dd = db
-	if messagebox.askokcancel("Quit", "Do you want to quit?"): #when ok is clicked, displays the following message
+	if messagebox.askokcancel("Quit", "Do you want to quit?"): # When ok is clicked, displays the following message
 		window.destroy()
-		del dd #deletes the object once window has been closed
+		del dd # Deletes the object once window has been closed
 
-window.protocol("WM_DELETE_WINDOW", on_closing)  # handles window closing
+window.protocol("WM_DELETE_WINDOW", on_closing)  # Handles window closing
 
-#tab commands
+# Tab settings
 s1 = Style()
 myblack = "#000000"
 mywhite = "#fff"
@@ -544,7 +564,7 @@ s.configure("Treeview.Heading", background="lightgreen", foreground='red', rowhe
 #s.configure("Treeview.Heading",background='#7d8ea3', foreground='#ffffff', font=("Century Gothic", 10, 'bold'))
 s.map('Treeview', background=[('selected', 'blue')])
 
-#treeview for tab1
+# Treeview for tab1
 hsb1 = Scrollbar(tab1, orient="horizontal")
 hsb1.grid(row=3, columnspan=8, column=0, sticky="ew")
 vsb1 = Scrollbar(tab1, orient="vertical")
@@ -592,7 +612,7 @@ tree1.bind("<ButtonRelease-1>", clicker)
 tree1.tag_configure('oddrow', background="white")
 tree1.tag_configure('evenrow', background="lightblue")
 
-#treeview for tab2
+# Treeview for tab2
 hsb2 = Scrollbar(tab2, orient="horizontal")
 hsb2.grid(row=3, columnspan=6, column=0, sticky="ew")
 vsb2 = Scrollbar(tab2, orient="vertical")
@@ -628,7 +648,7 @@ tree2.bind("<ButtonRelease-1>", clicker)
 tree2.tag_configure('oddrow', background="white")
 tree2.tag_configure('evenrow', background="lightblue")
 
-#treeview for tab3
+# Treeview for tab3
 hsb3 = Scrollbar(tab3, orient="horizontal")
 hsb3.grid(row=2, columnspan=6, column=0, sticky="ew")
 vsb3 = Scrollbar(tab3, orient="vertical")
@@ -662,7 +682,7 @@ tree3.bind("<ButtonRelease-1>", clicker)
 tree3.tag_configure('oddrow', background="white")
 tree3.tag_configure('evenrow', background="lightblue")
 
-#treeview for tab4
+# Treeview for tab4
 hsb4 = Scrollbar(tab4, orient="horizontal")
 hsb4.grid(row=3, columnspan=8, column=0, sticky="ew")
 vsb4 = Scrollbar(tab4, orient="vertical")
@@ -696,7 +716,7 @@ tree4.bind("<ButtonRelease-1>", clicker)
 tree4.tag_configure('oddrow', background="white")
 tree4.tag_configure('evenrow', background="lightblue")
 
-#treeview for tab5
+# Treeview for tab5
 hsb5 = Scrollbar(tab5, orient="horizontal")
 hsb5.grid(row=3, columnspan=8, column=0, sticky="ew")
 vsb5 = Scrollbar(tab5, orient="vertical")
@@ -744,40 +764,40 @@ for col in tree5["columns"]:
 n=0
 tabControl.bind('<ButtonRelease-1>', tab_change)
 
-title_text = StringVar() #taking arthro tile name input
-e1 = Entry(tab1, textvariable=title_text) #taking input from the user in the grid and storing it in a string variable
+title_text = StringVar() 
+e1 = Entry(tab1, textvariable=title_text) 
 e1.grid(row=0, column=1)
 
-author_text = StringVar() #taking author last name input
+author_text = StringVar() 
 e2 = Entry(tab1, textvariable=author_text)
 e2.grid(row=0, column=3)
 
-idruma_text = StringVar() #taking onoma idrumatos input
+idruma_text = StringVar() 
 e3 = Entry(tab1, textvariable=idruma_text)
 e3.grid(row=0, column=5)
 
-issn_text = StringVar() #taking issn input
+issn_text = StringVar() 
 e4 = Entry(tab1, textvariable=issn_text) 
 e4.grid(row=1, column=1)
 
-periodiko_text = StringVar() #taking periodiko title input
+periodiko_text = StringVar() 
 e5 = Entry(tab1, textvariable=periodiko_text)
 e5.grid(row=1, column=3)
 
-ar_text = StringVar() #taking arithmo teuxous input
+ar_text = StringVar() 
 e6 = Entry(tab1, textvariable=ar_text)
 e6.grid(row=1, column=5)
 
-ekdotis_text = StringVar() #taking onoma ekdoti input
+ekdotis_text = StringVar() 
 e7 = Entry(tab1, textvariable=ekdotis_text)
 e7.grid(row=0, column=7)
 
-keyw_text = StringVar() #taking onoma ekdoti input
+keyw_text = StringVar() 
 e8 = Entry(tab1, textvariable=keyw_text)
 e8.grid(row=1, column=7)
 
-l1 = Label(tab1, text="Τίτλος") #creating input labels in the window
-l1.grid(row=0, column=0) #determining size of the input grid for these labels
+l1 = Label(tab1, text="Τίτλος") 
+l1.grid(row=0, column=0) 
 
 l2 = Label(tab1, text="Επώνυμο Συντάκτη")
 l2.grid(row=0, column=2)
@@ -800,28 +820,28 @@ l7.grid(row=0, column=6)
 l8 = Label(tab1, text="Λέξη-Κλειδί")
 l8.grid(row=1, column=6)
 
-issn2_text = StringVar() #taking arthro tile name input
-en1 = Entry(tab2, textvariable=issn2_text) #taking input from the user in the grid and storing it in a string variable
+issn2_text = StringVar() 
+en1 = Entry(tab2, textvariable=issn2_text)
 en1.grid(row=0, column=1)
 
-periodiko2_text = StringVar() #taking author last name input
+periodiko2_text = StringVar() 
 en2 = Entry(tab2, textvariable=periodiko2_text)
 en2.grid(row=0, column=3)
 
-ar2_text = StringVar() #taking onoma idrumatos input
+ar2_text = StringVar() 
 en3 = Entry(tab2, textvariable=ar2_text)
 en3.grid(row=1, column=1)
 
-thema_text = StringVar() #taking periodiko title input
+thema_text = StringVar() 
 en4 = Entry(tab2, textvariable=thema_text)
 en4.grid(row=1, column=3)
 
-keyw2_text = StringVar() #taking onoma ekdoti input
+keyw2_text = StringVar() 
 en5 = Entry(tab2, textvariable=keyw2_text)
 en5.grid(row=0, column=5)
 
-la1 = Label(tab2, text="ISSN") #creating input labels in the window
-la1.grid(row=0, column=0) #determining size of the input grid for these labels
+la1 = Label(tab2, text="ISSN") 
+la1.grid(row=0, column=0) 
 
 la2 = Label(tab2, text="Περιοδικό")
 la2.grid(row=0, column=2)
@@ -835,48 +855,48 @@ la4.grid(row=1, column=2)
 la5 = Label(tab2, text="Λέξη_Κλειδί")
 la5.grid(row=0, column=4)
 
-issn3_text = StringVar() #taking arthro tile name input
-ent1 = Entry(tab3, textvariable=issn3_text) #taking input from the user in the grid and storing it in a string variable
+issn3_text = StringVar() 
+ent1 = Entry(tab3, textvariable=issn3_text) 
 ent1.grid(row=0, column=1)
 
-periodiko3_text = StringVar() #taking arthro tile name input
-ent2 = Entry(tab3, textvariable=periodiko3_text) #taking input from the user in the grid and storing it in a string variable
+periodiko3_text = StringVar() 
+ent2 = Entry(tab3, textvariable=periodiko3_text) 
 ent2.grid(row=0, column=3)
 
-ekdotis3_text = StringVar() #taking author last name input
+ekdotis3_text = StringVar()
 ent3 = Entry(tab3, textvariable=ekdotis3_text)
 ent3.grid(row=0, column=5)
 
-lab1 = Label(tab3, text="ISSN") #creating input labels in the window
-lab1.grid(row=0, column=0) #determining size of the input grid for these labels
+lab1 = Label(tab3, text="ISSN") 
+lab1.grid(row=0, column=0) 
 
-lab2 = Label(tab3, text="Περιοδικό") #creating input labels in the window
-lab2.grid(row=0, column=2) #determining size of the input grid for these labels
+lab2 = Label(tab3, text="Περιοδικό") 
+lab2.grid(row=0, column=2) 
 
 lab3 = Label(tab3, text="Εκδότης")
 lab3.grid(row=0, column=4)
 
-onomas_text = StringVar() #taking arthro tile name input
-entr1 = Entry(tab4, textvariable=onomas_text) #taking input from the user in the grid and storing it in a string variable
+onomas_text = StringVar() 
+entr1 = Entry(tab4, textvariable=onomas_text) 
 entr1.grid(row=0, column=1)
 
-onomap_text = StringVar() #taking arthro tile name input
-entr2 = Entry(tab4, textvariable=onomap_text) #taking input fronomap_textm the user in the grid and storing it in a string variable
+onomap_text = StringVar() 
+entr2 = Entry(tab4, textvariable=onomap_text) 
 entr2.grid(row=0, column=3)
 
-eponimo_text = StringVar() #taking author last name input
+eponimo_text = StringVar() 
 entr3 = Entry(tab4, textvariable=eponimo_text)
 entr3.grid(row=1, column=1)
 
-idiotita_text = StringVar() #taking arthro tile name input
-entr4 = Entry(tab4, textvariable=idiotita_text) #taking input fronomap_textm the user in the grid and storing it in a string variable
+idiotita_text = StringVar() 
+entr4 = Entry(tab4, textvariable=idiotita_text) 
 entr4.grid(row=1, column=3)
 
-labe1 = Label(tab4, text="Όνομα") #creating input labels in the window
-labe1.grid(row=0, column=0) #determining size of the input grid for these labels
+labe1 = Label(tab4, text="Όνομα") 
+labe1.grid(row=0, column=0) 
 
-labe2 = Label(tab4, text="Μεσαίο") #creating input labels in the window
-labe2.grid(row=0, column=2) #determining size of the input grid for these labels
+labe2 = Label(tab4, text="Μεσαίο") 
+labe2.grid(row=0, column=2) 
 
 labe3 = Label(tab4, text="Επώνυμο")
 labe3.grid(row=1, column=0)
@@ -884,12 +904,12 @@ labe3.grid(row=1, column=0)
 labe3 = Label(tab4, text="Ιδιότητα")
 labe3.grid(row=1, column=2)
 
-idrima5_text = StringVar() #taking arthro tile name input
-entry1 = Entry(tab5, width=30, textvariable=idrima5_text) #taking input from the user in the grid and storing it in a string variable
+idrima5_text = StringVar() 
+entry1 = Entry(tab5, width=30, textvariable=idrima5_text) 
 entry1.grid(row=0, column=1)
 
-label1 = Label(tab5, text="Ίδρυμα") #creating input labels in the window
-label1.grid(row=0, column=0) #determining size of the input grid for these labels
+label1 = Label(tab5, text="Ίδρυμα")
+label1.grid(row=0, column=0) 
 
 l7 = Label(tab1, text="Αποτελέσματα αναζήτησης", font=('Helvetica',11,'bold','underline'))
 l7.grid(row=2, column=3, columnspan=2, sticky='w')
@@ -906,11 +926,11 @@ labe7.grid(row=2, column=1, columnspan=2, sticky='w')
 label7 = Label(tab5, text="Αποτελέσματα αναζήτησης", font=('Helvetica',11,'bold','underline'))
 label7.grid(row=1, column=1, columnspan=2, sticky='w')
 
-b1_1 = Button(window, text="Search entry", width=14, command=search_command) #creating buttons for the various operations. Giving it a name and assigning a particular command to it. 
-b1_1.grid(row=3, column=9) #size of the button
+b1_1 = Button(window, text="Search entry", width=14, command=search_command) 
+b1_1.grid(row=3, column=9) 
 
-b1_2 = Button(window, text="Clear entry", width=14, command=clear_search_command) #creating buttons for the various operations. Giving it a name and assigning a particular command to it. 
-b1_2.grid(row=2, column=9) #size of the button
+b1_2 = Button(window, text="Clear entry", width=14, command=clear_search_command) 
+b1_2.grid(row=2, column=9) 
 
 b2 = Button(window, text="View all", width=14, command=view_command) 
 b2.grid(row=5, column=9) 
@@ -932,9 +952,8 @@ b5.grid(row=12, column=9)
 b6 = Button(window, text="Add keyword", width=14, command=add_keyw_command)
 b6.grid(row=13, column=9)
 
-# b7 = Button(window, text="Statistics", width=14, command=statistics.main_statistics)
-# b7.grid(row=14, column=9)
-
+b7 = Button(window, text="Statistics", width=14, command=statistics_command)
+b7.grid(row=14, column=9)
 
 b9 = Button(window, text="Close", width=14, command=window.destroy)
 b9.grid(row=15, column=9)
@@ -969,4 +988,4 @@ window.bind_class("Entry", "<Button-3><ButtonRelease-3>", show_textmenu)
 window.bind_class("Entry", "<Control-a>", callback_select_all)
 
 #--------------------------------------------------------------------------------------------
-window.mainloop() #carry the functioning of the GUI window on a loop until it is closed using the destructor
+window.mainloop() # Xarry the functioning of the GUI window on a loop until it is closed using the destructor

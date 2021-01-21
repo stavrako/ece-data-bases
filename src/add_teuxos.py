@@ -54,6 +54,7 @@ def main_add_teuxos():
         answer.config(text='record added')
         numerror.config(text='')
         dateerror.config(text='')
+        clear()
 
     # Clear all inputs
     def clear():
